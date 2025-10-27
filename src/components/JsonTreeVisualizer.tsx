@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-'use client';
+"use client";
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from "react";
 import ReactFlow, {
   Node,
   Edge,
@@ -13,11 +13,11 @@ import ReactFlow, {
   Panel,
   ReactFlowProvider,
   useReactFlow,
-} from 'reactflow';
-import 'reactflow/dist/style.css';
-import domtoimage from 'dom-to-image';
-import CustomNode from './CustomNode';
-import { parseJsonPath, generateNodesAndEdges } from '@/utils/jsonTreeUtils';
+} from "reactflow";
+import "reactflow/dist/style.css";
+import domtoimage from "dom-to-image";
+import CustomNode from "./CustomNode";
+import { parseJsonPath, generateNodesAndEdges } from "@/utils/jsonTreeUtils";
 
 interface JsonTreeVisualizerProps {
   jsonData: any;
@@ -32,63 +32,63 @@ function JsonTreeVisualizerContent({
 }: JsonTreeVisualizerProps) {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  const [searchInput, setSearchInput] = useState('');
-  const [searchMessage, setSearchMessage] = useState('');
-  const { fitView, setCenter, getNodes } = useReactFlow();
+  const [searchInput, setSearchInput] = useState("");
+  const [searchMessage, setSearchMessage] = useState("");
+  const { fitView, setCenter } = useReactFlow();
 
   const nodeTypes = useMemo(() => ({ custom: CustomNode }), []);
 
   const downloadImage = useCallback(() => {
-    const reactFlowWrapper = document.querySelector('.react-flow') as HTMLElement;
+    const reactFlowWrapper = document.querySelector(
+      ".react-flow"
+    ) as HTMLElement;
 
     if (!reactFlowWrapper) {
-      console.error('React Flow wrapper not found');
+      console.error("React Flow wrapper not found");
       return;
     }
 
-    // Hide controls and panels temporarily
-    const controls = reactFlowWrapper.querySelector('.react-flow__controls') as HTMLElement;
-    const panels = reactFlowWrapper.querySelectorAll('.react-flow__panel');
+    const controls = reactFlowWrapper.querySelector(
+      ".react-flow__controls"
+    ) as HTMLElement;
+    const panels = reactFlowWrapper.querySelectorAll(".react-flow__panel");
 
-    if (controls) controls.style.display = 'none';
+    if (controls) controls.style.display = "none";
     panels.forEach((panel) => {
-      (panel as HTMLElement).style.display = 'none';
+      (panel as HTMLElement).style.display = "none";
     });
 
-    // Capture the image
-    domtoimage.toPng(reactFlowWrapper, {
-      quality: 1,
-      bgcolor: '#ffffff',
-      width: reactFlowWrapper.offsetWidth,
-      height: reactFlowWrapper.offsetHeight,
-    })
+    domtoimage
+      .toPng(reactFlowWrapper, {
+        quality: 1,
+        bgcolor: "#ffffff",
+        width: reactFlowWrapper.offsetWidth,
+        height: reactFlowWrapper.offsetHeight,
+      })
       .then((dataUrl: string) => {
-        // Restore controls and panels
-        if (controls) controls.style.display = '';
+        if (controls) controls.style.display = "";
         panels.forEach((panel) => {
-          (panel as HTMLElement).style.display = '';
+          (panel as HTMLElement).style.display = "";
         });
 
-        // Download the image
-        const link = document.createElement('a');
-        link.download = 'json-tree-visualization.png';
+        const link = document.createElement("a");
+        link.download = "json-tree-visualization.png";
         link.href = dataUrl;
         link.click();
       })
       .catch((error: Error) => {
-        console.error('Error generating image:', error);
-
-        // Restore controls and panels even on error
-        if (controls) controls.style.display = '';
+        console.error("Error generating image:", error);
+        if (controls) controls.style.display = "";
         panels.forEach((panel) => {
-          (panel as HTMLElement).style.display = '';
+          (panel as HTMLElement).style.display = "";
         });
       });
   }, []);
 
   useEffect(() => {
     if (jsonData) {
-      const { nodes: newNodes, edges: newEdges } = generateNodesAndEdges(jsonData);
+      const { nodes: newNodes, edges: newEdges } =
+        generateNodesAndEdges(jsonData);
       setNodes(newNodes);
       setEdges(newEdges);
       setTimeout(() => fitView({ padding: 0.2 }), 50);
@@ -103,7 +103,7 @@ function JsonTreeVisualizerContent({
           data: { ...node.data, highlighted: false },
         }))
       );
-      setSearchMessage('');
+      setSearchMessage("");
       return;
     }
 
@@ -123,13 +123,13 @@ function JsonTreeVisualizerContent({
     );
 
     if (matchedNode) {
-      setSearchMessage('Match found');
+      setSearchMessage("Match found");
       setCenter(matchedNode.position.x + 100, matchedNode.position.y + 25, {
         zoom: 1.5,
         duration: 800,
       });
     } else {
-      setSearchMessage('No match found');
+      setSearchMessage("No match found");
     }
   }, [searchInput, nodes, setNodes, setCenter]);
 
@@ -148,13 +148,16 @@ function JsonTreeVisualizerContent({
         <Background />
         <Controls />
 
-        <Panel position="top-left" className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md m-4">
+        <Panel
+          position="top-left"
+          className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md m-4"
+        >
           <div className="flex gap-2 items-center">
             <input
               type="text"
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
               placeholder="Search by JSON path (e.g., $.user.name)"
               className="w-64 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg
                        text-sm bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200
@@ -171,9 +174,9 @@ function JsonTreeVisualizerContent({
           {searchMessage && (
             <p
               className={`mt-2 text-sm ${
-                searchMessage === 'Match found'
-                  ? 'text-green-600 dark:text-green-400'
-                  : 'text-red-600 dark:text-red-400'
+                searchMessage === "Match found"
+                  ? "text-green-600 dark:text-green-400"
+                  : "text-red-600 dark:text-red-400"
               }`}
             >
               {searchMessage}
@@ -181,7 +184,10 @@ function JsonTreeVisualizerContent({
           )}
         </Panel>
 
-        <Panel position="top-right" className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md m-4">
+        <Panel
+          position="top-right"
+          className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md m-4"
+        >
           <div className="text-sm text-gray-700 dark:text-gray-300">
             <p className="font-semibold mb-2">Legend:</p>
             <div className="flex items-center gap-2 mb-1">
@@ -201,8 +207,18 @@ function JsonTreeVisualizerContent({
               className="w-full px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium
                        rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                />
               </svg>
               Download Image
             </button>

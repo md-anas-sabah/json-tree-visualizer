@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-'use client';
+"use client";
 
-import { useState } from 'react';
+import { useState } from "react";
 
 interface JsonInputProps {
   onJsonParsed: (data: any) => void;
@@ -15,42 +15,42 @@ const SAMPLE_JSON = {
     address: {
       street: "123 Main St",
       city: "New York",
-      zipCode: "10001"
+      zipCode: "10001",
     },
-    isActive: true
+    isActive: true,
   },
   items: [
     {
       id: 101,
       name: "Laptop",
       price: 999.99,
-      inStock: true
+      inStock: true,
     },
     {
       id: 102,
       name: "Mouse",
       price: 29.99,
-      inStock: false
-    }
+      inStock: false,
+    },
   ],
   metadata: {
     version: "1.0",
     lastUpdated: "2025-10-27",
-    tags: ["electronics", "tech"]
-  }
+    tags: ["electronics", "tech"],
+  },
 };
 
 export default function JsonInput({ onJsonParsed }: JsonInputProps) {
   const [input, setInput] = useState(JSON.stringify(SAMPLE_JSON, null, 2));
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const handleVisualize = () => {
     try {
       const parsed = JSON.parse(input);
-      setError('');
+      setError("");
       onJsonParsed(parsed);
     } catch (e) {
-      setError('Invalid JSON: ' + (e as Error).message);
+      setError("Invalid JSON: " + (e as Error).message);
       onJsonParsed(null);
     }
   };
