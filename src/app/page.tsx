@@ -35,7 +35,7 @@ export default function Home() {
               {jsonData && (
                 <button
                   onClick={handleClearAll}
-                  className="px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white font-medium transition-colors"
+                  className="cursor-pointer px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white font-medium transition-colors"
                   title="Clear all and reset"
                 >
                   Clear/Reset

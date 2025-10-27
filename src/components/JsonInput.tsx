@@ -10,34 +10,35 @@ interface JsonInputProps {
 const SAMPLE_JSON = {
   user: {
     id: 1,
-    name: "John Doe",
-    email: "john@example.com",
+    name: "Md Anas Sabah",
+    email: "mdanassabah@gmail.com",
     address: {
-      street: "123 Main St",
-      city: "New York",
-      zipCode: "10001",
+      street: "Phulwari Sharif",
+      city: "Patna",
+      zipCode: "801505",
     },
     isActive: true,
   },
-  items: [
+  experience: [
     {
-      id: 101,
-      name: "Laptop",
-      price: 999.99,
-      inStock: true,
+      company: "Marqait",
+      role: "Software Development Engineer",
+      location: "Bangalore, India",
+      duration: "May 2025 – Present",
     },
     {
-      id: 102,
-      name: "Mouse",
-      price: 29.99,
-      inStock: false,
+      company: "GrowHut",
+      role: "Software Development Engineer",
+      location: "Gurgaon, India",
+      duration: "Oct 2024 – May 2025",
+    },
+    {
+      company: "AgentProd",
+      role: "Software Development Engineer Intern",
+      location: "Bangalore, India",
+      duration: "Apr 2024 – Sept 2024",
     },
   ],
-  metadata: {
-    version: "1.0",
-    lastUpdated: "2025-10-27",
-    tags: ["electronics", "tech"],
-  },
 };
 
 export default function JsonInput({ onJsonParsed }: JsonInputProps) {
@@ -78,7 +79,7 @@ export default function JsonInput({ onJsonParsed }: JsonInputProps) {
 
       <button
         onClick={handleVisualize}
-        className="mt-4 w-full py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold
+        className="cursor-pointer mt-4 w-full py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold
                    rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2
                    focus:ring-blue-500 focus:ring-offset-2"
       >

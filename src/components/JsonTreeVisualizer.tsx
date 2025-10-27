@@ -165,7 +165,7 @@ function JsonTreeVisualizerContent({
             />
             <button
               onClick={handleSearch}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium
+              className=" cursor-pointer px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium
                        rounded-lg transition-colors duration-200"
             >
               Search
@@ -204,7 +204,7 @@ function JsonTreeVisualizerContent({
             </div>
             <button
               onClick={downloadImage}
-              className="w-full px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium
+              className="cursor-pointer w-full px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium
                        rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
             >
               <svg
