@@ -125,11 +125,11 @@ function autoLayout(nodes: Node[], edges: Edge[]): Node[] {
   const positioned = new Set<string>();
   const levelGroups = new Map<number, string[]>();
 
-  function bfs() {
+  function bfs(root: Node) {
     const queue: Array<{ id: string; level: number; parentX?: number }> = [
-      { id: rootNode.id, level: 0 },
+      { id: root.id, level: 0 },
     ];
-    positioned.add(rootNode.id);
+    positioned.add(root.id);
 
     while (queue.length > 0) {
       const { id, level } = queue.shift()!;
@@ -149,7 +149,7 @@ function autoLayout(nodes: Node[], edges: Edge[]): Node[] {
     }
   }
 
-  bfs();
+  bfs(rootNode);
 
   // Position nodes
   const horizontalSpacing = 220;
