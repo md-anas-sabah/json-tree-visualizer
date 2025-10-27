@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import { Handle, Position } from 'reactflow';
 
 interface CustomNodeData {
@@ -17,8 +17,10 @@ interface CustomNodeProps {
 }
 
 function CustomNode({ data }: CustomNodeProps) {
+  const [showCopied, setShowCopied] = useState(false);
+
   const getNodeStyle = () => {
-    const baseStyle = 'px-4 py-2 rounded-lg shadow-md border-2 transition-all duration-200';
+    const baseStyle = 'px-4 py-2 rounded-lg shadow-md border-2 transition-all duration-200 cursor-pointer hover:scale-105';
 
     let colorStyle = '';
     if (data.type === 'object') {
@@ -44,20 +46,38 @@ function CustomNode({ data }: CustomNodeProps) {
     return JSON.stringify(value);
   };
 
-  return (
-    <div className={getNodeStyle()} title={data.path}>
-      <Handle type="target" position={Position.Top} className="w-2 h-2" />
+  const handleCopyPath = async () => {
+    try {
+      await navigator.clipboard.writeText(data.path);
+      setShowCopied(true);
+      setTimeout(() => setShowCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy path:', err);
+    }
+  };
 
-      <div className="font-mono text-sm">
-        <div className="font-semibold">{data.label}</div>
-        {data.type === 'primitive' && data.value !== undefined && (
-          <div className="text-xs mt-1 opacity-80">
-            {formatValue(data.value)}
-          </div>
-        )}
+  return (
+    <div className="relative">
+      <div className={getNodeStyle()} title={`${data.path}\nClick to copy path`} onClick={handleCopyPath}>
+        <Handle type="target" position={Position.Top} className="w-2 h-2" />
+
+        <div className="font-mono text-sm">
+          <div className="font-semibold">{data.label}</div>
+          {data.type === 'primitive' && data.value !== undefined && (
+            <div className="text-xs mt-1 opacity-80">
+              {formatValue(data.value)}
+            </div>
+          )}
+        </div>
+
+        <Handle type="source" position={Position.Bottom} className="w-2 h-2" />
       </div>
 
-      <Handle type="source" position={Position.Bottom} className="w-2 h-2" />
+      {showCopied && (
+        <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-green-500 text-white text-xs px-2 py-1 rounded shadow-lg whitespace-nowrap">
+          Path copied!
+        </div>
+      )}
     </div>
   );
 }

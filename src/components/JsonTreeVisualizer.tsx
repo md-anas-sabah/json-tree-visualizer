@@ -15,6 +15,7 @@ import ReactFlow, {
   useReactFlow,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
+import domtoimage from 'dom-to-image';
 import CustomNode from './CustomNode';
 import { parseJsonPath, generateNodesAndEdges } from '@/utils/jsonTreeUtils';
 
@@ -33,9 +34,57 @@ function JsonTreeVisualizerContent({
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [searchInput, setSearchInput] = useState('');
   const [searchMessage, setSearchMessage] = useState('');
-  const { fitView, setCenter } = useReactFlow();
+  const { fitView, setCenter, getNodes } = useReactFlow();
 
   const nodeTypes = useMemo(() => ({ custom: CustomNode }), []);
+
+  const downloadImage = useCallback(() => {
+    const reactFlowWrapper = document.querySelector('.react-flow') as HTMLElement;
+
+    if (!reactFlowWrapper) {
+      console.error('React Flow wrapper not found');
+      return;
+    }
+
+    // Hide controls and panels temporarily
+    const controls = reactFlowWrapper.querySelector('.react-flow__controls') as HTMLElement;
+    const panels = reactFlowWrapper.querySelectorAll('.react-flow__panel');
+
+    if (controls) controls.style.display = 'none';
+    panels.forEach((panel) => {
+      (panel as HTMLElement).style.display = 'none';
+    });
+
+    // Capture the image
+    domtoimage.toPng(reactFlowWrapper, {
+      quality: 1,
+      bgcolor: '#ffffff',
+      width: reactFlowWrapper.offsetWidth,
+      height: reactFlowWrapper.offsetHeight,
+    })
+      .then((dataUrl: string) => {
+        // Restore controls and panels
+        if (controls) controls.style.display = '';
+        panels.forEach((panel) => {
+          (panel as HTMLElement).style.display = '';
+        });
+
+        // Download the image
+        const link = document.createElement('a');
+        link.download = 'json-tree-visualization.png';
+        link.href = dataUrl;
+        link.click();
+      })
+      .catch((error: Error) => {
+        console.error('Error generating image:', error);
+
+        // Restore controls and panels even on error
+        if (controls) controls.style.display = '';
+        panels.forEach((panel) => {
+          (panel as HTMLElement).style.display = '';
+        });
+      });
+  }, []);
 
   useEffect(() => {
     if (jsonData) {
@@ -143,10 +192,20 @@ function JsonTreeVisualizerContent({
               <div className="w-4 h-4 bg-green-500 rounded"></div>
               <span>Array</span>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 mb-3">
               <div className="w-4 h-4 bg-orange-500 rounded"></div>
               <span>Primitive</span>
             </div>
+            <button
+              onClick={downloadImage}
+              className="w-full px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium
+                       rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+              Download Image
+            </button>
           </div>
         </Panel>
       </ReactFlow>
